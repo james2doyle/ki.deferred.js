@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Ki.js Deferred</title>
+  <script>
+  // define $ so that the little examples work.
+  window.$ = {};
+  </script>
+</head>
+<body>
+  <h1>A Deferred function for Ki</h1>
+  <p id="logger"></p>
+  <script src="deferred.js"></script>
+  <script>
+    function log() {
+      var _log = document.getElementById('logger');
+      for (var i = 0; i < arguments.length; i++) {
+        _log.innerHTML += ' '+arguments[i];
+      }
+      _log.innerHTML += '</br>';
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+      function late(n) {
+        log('late called');
+        var p = new $.Deferred();
+        setTimeout(function() {
+          p.resolve(n);
+        }, n);
+        return p.promise();
+      }
+      function late2(n) {
+        log('late2 called');
+        var p = new $.Deferred();
+        setTimeout(function() {
+          p.resolve(n);
+        }, n);
+        return p.promise();
+      }
+      late(500).then(function(resolvedValue) {
+        log('late resolved and success', resolvedValue);
+      }, function() {
+        log('error');
+      });
+      $.when(late(1000), late2(1200)).then(function(resolvedValue1, resolvedValue2) {
+        log(resolvedValue1, resolvedValue2);
+      }, function() {
+        log('error');
+      });
+    });
+  </script>
+</body>
+</html>
